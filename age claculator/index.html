@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Age calculator</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+        box-sizing: border-box;
+      }
+      .container {
+        width: 100%;
+        min-height: 100vh;
+        padding: 10px;
+        color: #fff;
+        background: linear-gradient(135deg, #0314a9, #d390fc);
+      }
+
+      .calculator {
+        width: 100%;
+        max-width: 600px;
+        margin-left: 10%;
+        margin-top: 10%;
+      }
+      .calculator h1 {
+        font-size: 60px;
+      }
+      .calculator h1 span {
+        color: #ffbd76;
+      }
+
+      .input-box {
+        margin: 40px 0;
+        padding: 35px;
+        border-radius: 10px;
+        background: rgba(225, 225, 225, 0.3);
+        display: flex;
+        align-items: center;
+      }
+      .input-box input {
+        flex: 1;
+        margin-right: 20px;
+        padding: 14px 20px;
+        border: 0;
+        outline: 0;
+        font-size: 14px;
+        border-radius: 5px;
+        position: relative;
+      }
+      .input-box button {
+        background-color: #ffbd76;
+        border: 0;
+        outline: 0;
+        padding: 15px 30px;
+        border-radius: 5px;
+        font-weight: 500;
+        color: #333;
+        cursor: pointer;
+      }
+      .input-box {
+        position: relative;
+      }
+
+      .input-box input[type="date"] {
+        padding-right: 0px; /* Ensure space for the icon */
+      }
+
+      .input-box input[type="date"]::-webkit-calendar-picker-indicator {
+        width: 20px;
+        height: 20px;
+        background-size: 20px; /* Ensures full icon is shown */
+        background-position: right 5px center;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="calculator">
+        <h1>Javascript <br /><span>Age Calculator</span></h1>
+        <div class="input-box">
+          <input type="date" id="date" />
+          <button>Calculator</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Get the date input field
+      let userInput = document.getElementById("date");
+
+      // Set the maximum selectable date to today (prevents future dates)
+      userInput.max = new Date().toISOString().split("T")[0];
+
+      // Add event listener to the button to call calculateAge() on click
+      document.querySelector("button").addEventListener("click", calculateAge);
+
+      function calculateAge() {
+        // Get the selected birth date from the input
+        let birthDate = new Date(userInput.value);
+
+        // Check if a valid date is selected
+        if (!userInput.value) {
+          alert("Please select a valid birth date.");
+          return;
+        }
+
+        // Extract day, month, and year from birth date
+        let d1 = birthDate.getDate();
+        let m1 = birthDate.getMonth() + 1; // Month is 0-based, so we add 1
+        let y1 = birthDate.getFullYear();
+
+        // Get today's date
+        let today = new Date();
+        let d2 = today.getDate();
+        let m2 = today.getMonth() + 1; // Convert to 1-based month
+        let y2 = today.getFullYear();
+
+        // Calculate the initial difference
+        let y3 = y2 - y1;
+        let m3 = m2 - m1;
+        let d3 = d2 - d1;
+
+        // If the birth date's day is greater than today's day, adjust the calculation
+        if (d3 < 0) {
+          // Borrow days from the previous month
+          m3--;
+          d3 += getDaysInMonth(y1, m1); // Get days in birth month
+        }
+
+        // If the birth date's month is greater than the current month, adjust the calculation
+        if (m3 < 0) {
+          // Borrow months from the previous year
+          y3--;
+          m3 += 12;
+        }
+
+        // Display the calculated age on the page
+        document.querySelector(
+          ".calculator"
+        ).innerHTML += `<p>You are <b>${y3}</b> years, <b>${m3}</b> months, and <b>${d3}</b> days old.</p>`;
+      }
+
+      // Function to get the number of days in a specific month
+      function getDaysInMonth(year, month) {
+        return new Date(year, month, 0).getDate();
+      }
+    </script>
+  </body>
+</html>
